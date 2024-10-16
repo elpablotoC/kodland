@@ -1,55 +1,36 @@
 import discord
+from discord.ext import commands
+import requests
+import random
+import os
 from settings import settings
+
+clasificacion_residuos = {
+    "botellas plastico": "Las botellas de plastico van en la caneca verde o blanca.",
+    "botellas vidrio": "Las botellas de vidrio van en la caneca verde",
+    "bolsas de plastico": "Las bolsas de plastico van en la caneca azul o blanca ",
+    "papel": "El papel va en la caneca azul ",
+    "aluminio": "El aluminio va en la caneca azul o blanca",
+    "curitas":"Las curitas van en la caneca negra",
+    "papel higienico": "El papel higienico va en la caneca negra"
+
+
+
+
+}
+
+def clasificar_residuos(objeto):
+    return clasificacion_residuos.get(objeto.lower(), "No tengo informacion sobre este objeto")
 
 intents = discord.Intents.default()
 intents.message_content = True
 
-client = discord.Client(intents=intents)
+bot = commands.Bot(command_prefix='$', intents=intents)
 
-@client.event
-async def on_ready():
-    print(f'We have logged in as {client.user}')
+@bot.command('clasificar')
+async def clasificar(ctx, *, objeto:str):
+    respuesta = clasificar_residuos(objeto)
+    await ctx.send(f"Clasificacion: {respuesta}")
+    
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-    if message.content.startswith('$hello'):
-        await message.channel.send(f'Hola, soy un bot {client.user}!')
-    elif  message.content.startswith('$heh'):
-        if len(message.content) > 4:
-            count_heh = int(message.content[4:])
-        else:
-            count_heh = 5
-        await message.channel.send("he" * count_heh)
-    elif message.content.startswith  ("$userinfo"):
-        user_id = message.author.id
-        user = await client.fetch_user(user_id)
-        await  message.channel.send(f'usuario: {user.name}, id: {user.id}' )
-
-
-
-client.run(settings["TOKEN"])
-
-import random
-
-def gen_pass(pass_length):
-    elements = "+-/*!&$#?=@<>"
-    password = ""
-
-    for i in range(pass_length):
-        password += random.choice(elements)
-
-    return password
-
-def gen_emodji():
-    emodji = ["\U0001f600", "\U0001f642", "\U0001F606", "\U0001F923"]
-    return random.choice(emodji)
-
-
-def flip_coin():
-    flip = random.randint(0, 2)
-    if flip == 0:
-        return "HEADS"
-    else:
-        return "TAILS"
+bot.run(settings["TOKEN"])
