@@ -1,55 +1,29 @@
-import discord
-from settings import settings
 
-intents = discord.Intents.default()
-intents.message_content = True
-
-client = discord.Client(intents=intents)
-
-@client.event
-async def on_ready():
-    print(f'We have logged in as {client.user}')
-
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-    if message.content.startswith('$hello'):
-        await message.channel.send(f'Hola, soy un bot {client.user}!')
-    elif  message.content.startswith('$heh'):
-        if len(message.content) > 4:
-            count_heh = int(message.content[4:])
-        else:
-            count_heh = 5
-        await message.channel.send("he" * count_heh)
-    elif message.content.startswith  ("$userinfo"):
-        user_id = message.author.id
-        user = await client.fetch_user(user_id)
-        await  message.channel.send(f'usuario: {user.name}, id: {user.id}' )
-
-
-
-client.run(settings["TOKEN"])
-
+from flask import Flask, url_for
 import random
 
-def gen_pass(pass_length):
-    elements = "+-/*!&$#?=@<>"
-    password = ""
+app = Flask(__name__)
 
-    for i in range(pass_length):
-        password += random.choice(elements)
+# Lista de hechos al azar
+random_facts = [
+    "Los pulpos tienen tres corazones.",
+    "El corazón de un camarón está en su cabeza.",
+    "Una vaca produce alrededor de 200,000 vasos de leche en su vida.",
+    "Los plátanos son bayas, pero las fresas no lo son.",
+    "Las abejas pueden reconocer rostros humanos."
+]
 
-    return password
+@app.route("/")
+def home():
+    return '''
+    <h1>Hola, en esta página puedes aprender un par de cosas interesantes sobre las dependencias tecnológicas.</h1>
+    <a href="''' + url_for('random_fact') + '''">¡Ver un hecho al azar!</a>
+    '''
 
-def gen_emodji():
-    emodji = ["\U0001f600", "\U0001f642", "\U0001F606", "\U0001F923"]
-    return random.choice(emodji)
+@app.route("/random_fact")
+def random_fact():
+    fact = random.choice(random_facts)
+    return f'<h1>Hecho al azar:</h1><p>{fact}</p>'
 
-
-def flip_coin():
-    flip = random.randint(0, 2)
-    if flip == 0:
-        return "HEADS"
-    else:
-        return "TAILS"
+if __name__ == "__main__":
+    app.run(debug=True)
