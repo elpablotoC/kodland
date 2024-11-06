@@ -1,0 +1,35 @@
+
+head {
+    font-size: 50px; /* Cambia el tamaño de la cabeza */
+}
+
+body {
+    font-family: Arial,  sans-serif; /* Familia de fuentes */
+    font-size: 20px; /* El tamaño de la fuente principal en el tag <p></p> */
+    background-color: #c5c4c4; /* El color del fondo de la página web */
+    text-align: center; /*alinear el texto*/
+    color: rgb(79, 79, 160); /* El color del texto*/ 
+}
+
+@keyframes color-change {
+    0% {
+      color: rgb(0, 0, 0);
+    }
+  
+    50% {
+      color: rgb(87, 82, 82);
+    }
+  
+    100% {
+      color: rgb(0, 0, 0);
+    }
+}
+
+h1 {
+    animation: color-change 3s infinite;
+}
+h1 {
+    color: #125fd3; /* El color de la cabecera */
+    font-size: 24px; /* El tamaño de la fuente de la cabecera */
+    font-family: Georgia, serif; /* La familia tipográfica utilizada en la cabecera */
+}
